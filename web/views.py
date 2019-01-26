@@ -1,16 +1,17 @@
 from django.shortcuts import render,HttpResponse,redirect
 from web import models
+from django.views.decorators.csrf import csrf_exempt,csrf_protect
 import json
 # Create your views here.
 def auth(func):
     def inner(request,*args,**kwargs):
         request.session.clear_expired()
-        print(request.session.get('is_login'))
         if not request.session.get("is_login",None):
             return redirect("/web/login")
         return func(request,*args,**kwargs)
     return inner
 
+# @csrf_exempt
 def login(request):
     if request.method == "GET":
         return render(request,"web/login.html")
@@ -40,4 +41,4 @@ def index(request):
 
 @auth
 def test(request):
-    return  HttpResponse("test")
+    return  HttpResponse("OK")

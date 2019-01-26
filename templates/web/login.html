@@ -17,6 +17,18 @@
         <input type="button" value="提交"/>
         <span style="color: red" id="error_msg">{{ error_msg }}</span>
     </form>
+    <div class="row">
+      <div class="col-sm-6 col-md-4">
+        <div class="thumbnail">
+          <img src="/static/image/999.jpg" alt="...">
+          <div class="caption">
+            <h3>Thumbnail label</h3>
+            <p>...</p>
+            <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="/static/jquery-3.3.1.min.js"></script>
     <script src="/static/jquery.cookie.js"></script>
     <script>
@@ -25,10 +37,9 @@
             $("input[value='提交']").click(function () {
                 $.ajaxSetup({
                     beforeSend:function (xhr,settings) {
-                            xhr.setRequestHeader('X-CSRFtoken',$.cookie('csrftoken')
-)
+                            xhr.setRequestHeader('X-CSRFtoken',$.cookie('csrftoken'))
                     }
-                });
+                 });
                 $.ajax({
                     url:"web/login",
                     type: "POST",
