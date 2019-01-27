@@ -1,7 +1,10 @@
 from django.shortcuts import render,HttpResponse,redirect
 from web import models
 from django.views.decorators.csrf import csrf_exempt,csrf_protect
+from django.views.decorators.cache import cache_page
 import json
+
+
 # Create your views here.
 def auth(func):
     def inner(request,*args,**kwargs):
@@ -42,3 +45,34 @@ def index(request):
 @auth
 def test(request):
     return  HttpResponse("OK")
+
+# @cache_page(10)
+def cache(request):
+    import time
+    ctime=time.time()
+    return render(request,'web/cache.html',{'ctime':ctime})
+
+def singals(request):
+    # models.UserInfo.objects.create(user_name="yinuo",user_pwd="123456",user_tel="13321123556",user_email="yinuo@163.com")
+    print('finish!!!!!')
+    from sg import yinuo
+    yinuo.send(sender='yiruiduan',top="55",size=66)
+
+    return HttpResponse("on")
+from django import forms
+class FM(forms.Form):
+    user=forms.CharField()
+    password=forms.CharField()
+    telphone=forms.CharField()
+    email=forms.EmailField(error_messages={"invalid":"邮箱格式错误","required":"邮箱不能为空"})
+
+def register(request):
+    if request.method == "GET":
+        fm_obj=FM()
+        return render(request,'web/register.html',{'fm_obj':fm_obj})
+    if request.method == 'POST':
+        fm_obj=FM(request.POST)
+        r1=fm_obj.is_valid()
+        print(fm_obj.errors.as_json())
+
+        return render(request,'web/register.html',{'fm_obj':fm_obj})

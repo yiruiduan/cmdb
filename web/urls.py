@@ -23,4 +23,7 @@ urlpatterns = [
     re_path('login$', views.login),
     re_path('loginout$', views.loginout),
     re_path('test', views.test),
+    re_path('cache$', views.cache),
+    re_path('singals$', views.singals),
+    re_path('register$', views.register),
 ]

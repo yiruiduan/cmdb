@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <style>
+        input{
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <form action="web/register" method="post">
+        {% csrf_token %}
+        <p>{{ fm_obj.user }} {{ fm_obj.errors.user.0 }}</p>
+        <p>{{ fm_obj.password }} {{ fm_obj.password.errors.0 }}</p>
+        <p>{{ fm_obj.telphone }} {{ fm_obj.telphone.errors.0 }}</p>
+        <p>{{ fm_obj.email }} {{ fm_obj.email.errors.0 }}</p>
+        <input type="submit" value="提交">
+
+    </form>
+</body>
+</html>
