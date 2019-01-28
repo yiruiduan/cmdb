@@ -10,12 +10,12 @@
     </style>
 </head>
 <body>
-    <form action="web/register" method="post">
+    <form action="/web/register" method="post">
         {% csrf_token %}
-        <p>{{ fm_obj.user }} {{ fm_obj.errors.user.0 }}</p>
-        <p>{{ fm_obj.password }} {{ fm_obj.password.errors.0 }}</p>
-        <p>{{ fm_obj.telphone }} {{ fm_obj.telphone.errors.0 }}</p>
-        <p>{{ fm_obj.email }} {{ fm_obj.email.errors.0 }}</p>
+        <p>{{ fm_obj.user_name }} {{ fm_obj.errors.user_name.0 }}</p>
+        <p>{{ fm_obj.user_pwd }} {{ fm_obj.errors.user_pwd.0 }}</p>
+        <p>{{ fm_obj.user_tel }} {{ fm_obj.errors.user_tel.0 }}</p>
+        <p>{{ fm_obj.user_email }} {{ fm_obj.errors.user_email.0 }}</p>
         <input type="submit" value="提交">
 
     </form>

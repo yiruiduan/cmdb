@@ -3,7 +3,7 @@ from web import models
 from django.views.decorators.csrf import csrf_exempt,csrf_protect
 from django.views.decorators.cache import cache_page
 import json
-
+from sg import cmdb_log
 
 # Create your views here.
 def auth(func):
@@ -53,18 +53,35 @@ def cache(request):
     return render(request,'web/cache.html',{'ctime':ctime})
 
 def singals(request):
-    # models.UserInfo.objects.create(user_name="yinuo",user_pwd="123456",user_tel="13321123556",user_email="yinuo@163.com")
     print('finish!!!!!')
-    from sg import yinuo
-    yinuo.send(sender='yiruiduan',top="55",size=66)
-
+    # from sg import cmdb_log
+    # cmdb_log.send(sender='yiruiduan',top="55",size=66)
     return HttpResponse("on")
-from django import forms
-class FM(forms.Form):
-    user=forms.CharField()
-    password=forms.CharField()
-    telphone=forms.CharField()
-    email=forms.EmailField(error_messages={"invalid":"邮箱格式错误","required":"邮箱不能为空"})
+
+from django.forms import Form
+from django.forms import widgets
+from django.forms import fields
+from django.core.validators import RegexValidator
+class FM(Form):
+
+    user_name=fields.CharField(
+        required=True,
+        widget=widgets.TextInput(attrs={'placeholder': '用户名'}),
+    )
+    user_pwd=fields.CharField(
+        required=True,
+        widget=widgets.TextInput(attrs={'placeholder': '密码'}),
+                             )
+    user_tel=fields.CharField(
+        required=True,
+        validators=[RegexValidator(r'^[0-9]+$', '请输入数字'), RegexValidator(r'^1([38]\d|5[0-35-9]|7[3678])\d{8}$', '请输入正确的手机号码')],
+        widget=widgets.TextInput(attrs={'placeholder': '手机号'}),
+    )
+    user_email=fields.EmailField(
+        required=True,
+        widget=widgets.TextInput(attrs={'placeholder': '邮箱'}),
+        error_messages={"invalid":"邮箱格式错误","required":"邮箱不能为空"}
+    )
 
 def register(request):
     if request.method == "GET":
@@ -73,6 +90,12 @@ def register(request):
     if request.method == 'POST':
         fm_obj=FM(request.POST)
         r1=fm_obj.is_valid()
-        print(fm_obj.errors.as_json())
+        if r1:
+            from  django.db import connection
+            models.UserInfo.objects.create(**fm_obj.cleaned_data)
+            print(connection.queries[-1])
+            cmdb_log.send(sender="yiruiduan",sql=connection.queries[-1])
+        else:
+            print(fm_obj.errors.as_json())
 
         return render(request,'web/register.html',{'fm_obj':fm_obj})
